@@ -73,7 +73,7 @@ fun ItemDetailsScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navigateToEditItem(0) },
+                onClick = { navigateToEditItem(uiState.value.itemDetails.toItem().id) },
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large))
             ) {
@@ -172,7 +172,6 @@ fun ItemDetails(
                 dimensionResource(id = R.dimen.padding_medium)
             )
         ) {
-            Log.d("itemName", "ItemDetails: " + item.name)
             ItemDetailsRow(
                 labelResId = R.string.item,
                 itemDetail = item.name,
