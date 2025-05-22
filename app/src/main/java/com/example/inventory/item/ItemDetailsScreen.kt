@@ -1,5 +1,6 @@
 package com.example.inventory.item
 
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -35,10 +37,12 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.inventory.InventoryTopAppBar
 import com.example.inventory.R
 import com.example.inventory.data.Item
 import com.example.inventory.navigation.NavigationDestination
+import com.example.inventory.ui.AppViewModelProvider
 
 object ItemDetailsDestination : NavigationDestination {
     override val route: String = "item_details"
@@ -52,8 +56,10 @@ object ItemDetailsDestination : NavigationDestination {
 fun ItemDetailsScreen(
     navigateToEditItem: (Int) -> Unit,
     navigateBack: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: ItemDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+    val uiState = viewModel.uiState.collectAsState()
     Scaffold(
         topBar = {
             InventoryTopAppBar(
@@ -77,7 +83,7 @@ fun ItemDetailsScreen(
         modifier = modifier
     ) { innerPadding ->
         ItemDetailBody(
-            itemDetailsUiState = ItemDetailsUiState(),
+            itemDetailsUiState = uiState.value,
             onSellItem = {},
             onDelete = {},
             modifier = Modifier
@@ -158,6 +164,7 @@ fun ItemDetails(
                 dimensionResource(id = R.dimen.padding_medium)
             )
         ) {
+            Log.d("itemName", "ItemDetails: " + item.name)
             ItemDetailsRow(
                 labelResId = R.string.item,
                 itemDetail = item.name,
